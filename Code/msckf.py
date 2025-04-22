@@ -236,18 +236,19 @@ class MSCKF(object):
         Initialize the IMU bias and initial orientation based on the 
         first few IMU readings.
         """
-        # Initialize the gyro_bias given the current angular and linear velocity
-        ...
+        print(self.imu_msg_buffer)
+        # # Initialize the gyro_bias given the current angular and linear velocity
+        # ...
 
-        # Find the gravity in the IMU frame.
-        ...
+        # # Find the gravity in the IMU frame.
+        # ...
         
-        # Normalize the gravity and save to IMUState          
-        ...
+        # # Normalize the gravity and save to IMUState          
+        # ...
 
-        # Initialize the initial orientation, so that the estimation
-        # is consistent with the inertial frame.
-        ...
+        # # Initialize the initial orientation, so that the estimation
+        # # is consistent with the inertial frame.
+        # ...
 
     # Filter related functions
     # (batch_imu_processing, process_model, predict_new_state)
