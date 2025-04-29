@@ -5,7 +5,8 @@ from threading import Thread
 from config import ConfigEuRoC
 from image import ImageProcessor
 from msckf import MSCKF
-
+import numpy as np
+from utils import *
 
 
 class VIO(object):
@@ -26,6 +27,10 @@ class VIO(object):
         self.img_thread.start()
         self.imu_thread.start()
         self.vio_thread.start()
+
+        # clear the trajectory file
+        with open('./eval/stamped_traj_estimate.txt', 'w') as file:
+                    file.write("")
 
     def process_img(self):
         while True:
@@ -63,6 +68,7 @@ class VIO(object):
 
             if result is not None and self.viewer is not None:
                 self.viewer.update_pose(result.cam0_pose)
+                write_trajectory(result, dest='./eval/stamped_traj_estimate.txt')
         
 
 
@@ -77,6 +83,7 @@ if __name__ == '__main__':
     parser.add_argument('--path', type=str, default='path/to/your/EuRoC_MAV_dataset/MH_01_easy', 
         help='Path of EuRoC MAV dataset.')
     parser.add_argument('--view', action='store_true', help='Show trajectory.')
+    # parser.add_argument('--write', action='store_true', help='write the predicted trajectory to eval')
     args = parser.parse_args()
 
     if args.view:

@@ -2,8 +2,12 @@ import numpy as np
 import OpenGL.GL as gl
 import pangolin
 import cv2
+import csv
+from utils import *
 
 from multiprocessing import Queue, Process
+
+
 
 
 
@@ -26,14 +30,13 @@ class Viewer(object):
         elif image.ndim == 2:
             image = np.repeat(image[..., np.newaxis], 3, axis=2)
         self.image_queue.put(image)
-            
 
     def view(self):
         pangolin.CreateWindowAndBind('Viewer', 1024, 768)
         gl.glEnable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc (gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-
+        
         viewpoint_x = 0
         viewpoint_y = -7  
         viewpoint_z = -18 
@@ -92,6 +95,11 @@ class Viewer(object):
             # draw axis
             axis.Render()
 
+            # # show gt trajectory
+            # gl.glPointSize(2)
+            # gl.glColor3f(1.0, 0.0, 0.0)
+            # pangolin.DrawPoints(gt_traj.array())
+
             # draw current camera
             if camera is not None:
                 gl.glLineWidth(1)
@@ -112,6 +120,8 @@ class Viewer(object):
                 texture.RenderToViewport()
                 
             pangolin.FinishFrame()
+
+        
 
 
 
@@ -163,7 +173,17 @@ class DynamicArray(object):
             yield x
 
 
-
+gt_traj = DynamicArray()
+with open('../mav0/state_groundtruth_estimate0/data.csv', 'r') as file:
+    reader =  csv.reader(file)
+    header = next(reader)
+    print('Header', header)
+    init_pos = np.array(next(reader)[1:4]).astype(float)
+    init_orient = np.array([-0.153029, -0.827383, -0.082152, 0.534108]) 
+    print(init_pos)
+    # rot = to_rotation(from_two_vectors(init_orient, np.array([0,0,0,1])))
+    for row in reader:
+        gt_traj.append((np.array(row[1:4]).astype(float)))
 
 if __name__ == '__main__':
     import g2o

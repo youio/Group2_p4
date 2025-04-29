@@ -155,3 +155,16 @@ class Isometry3d(object):
         R = self.R @ T1.R
         t = self.R @ T1.t + self.t
         return Isometry3d(R, t)
+    
+def write_trajectory(result, dest):
+    with open(dest, 'a') as file:
+        thisdata = []
+        for r in result[:-2]:
+            if isinstance(r, np.ndarray):
+                thisdata.extend(r.astype(str).tolist())
+            else:
+                thisdata.append(str(r))
+
+        print(thisdata)
+        
+        file.write(" ".join(thisdata)+'\n')
