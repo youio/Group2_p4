@@ -3,3 +3,5 @@ pangolin/
 __pycache__/
 Evaluation_Tools/
 viovenv/
+*.blend*
+train/
