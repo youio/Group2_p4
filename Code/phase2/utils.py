@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from math import pi, sin, cos
-
 # quaternion representation: [x, y, z, w]
 # JPL convention
 
@@ -176,14 +174,16 @@ def descrete_derivative(series, dt):
 
 
 
-def plot_trajectory(trajectory):
-    
-    x, y, z = np.array(trajectory).T
+def plot_trajectories(trajectories):
 
-    # Plotting
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.plot(x, y, z, label='Trajectory', color='blue')
+
+    colors = ['blue', 'red', 'green']
+    
+    for i, trajectory in enumerate(trajectories):
+        x, y, z = np.array(trajectory).T
+        ax.plot(x, y, z, label='Trajectory', color=colors[i])
 
     # Optional: set labels and aspect
     ax.set_xlabel('X')

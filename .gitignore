@@ -5,3 +5,7 @@ Evaluation_Tools/
 viovenv/
 *.blend*
 train/
+val/
+*.zip
+sample/
+imgs0/

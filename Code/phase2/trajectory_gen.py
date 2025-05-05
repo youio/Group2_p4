@@ -1,8 +1,6 @@
 import numpy as np
 from utils import *
 from math import sin, cos, pi
-import random
-from scipy.spatial.transform import Rotation as R
 from ImuUtils import run_acc_demo, run_gyro_demo
 
 
@@ -71,6 +69,7 @@ def write_trajectory_and_imu(orients, trajectory, imu_data, traj_dest, imu_dest)
 
     # print(trajectory.shape, orients.shape, timestamps.shape)
     pose_traj = np.hstack([timestamps, trajectory, orients])
+    print(pose_traj)
     # print(pose_traj, pose_traj.shape)
     imu_stamped = np.hstack([timestamps, imu_data])
 
@@ -118,7 +117,7 @@ def get_random_orients(trajectory, t):
     coefs = np.random.rand(6)*pi
 
     random_ang_vel = coefs[0]*np.sin(coefs[1]*t+coefs[2]) + coefs[3]*np.sin(coefs[4]*t+coefs[5])
-    random_ang_vel = (random_ang_vel/np.max(random_ang_vel))*0.003
+    random_ang_vel = (random_ang_vel/np.max(random_ang_vel))*0.001
     
     base = trajectory[1]-trajectory[0]
     base[2] = 0
@@ -136,7 +135,7 @@ def get_random_orients(trajectory, t):
     return np.array(orients)
 
 def generate_num_data(i, nsamp=1000):
-    t = np.linspace(0, pi/2, nsamp)
+    t = np.linspace(0, pi/3, nsamp)
     traj = generate_random_traj(t)
     orients = get_random_orients(traj, t)
 
@@ -149,13 +148,17 @@ def generate_num_data(i, nsamp=1000):
     imu_dat = np.concatenate([linacc_real, angvel_real], 1)
 
     pose_dat = write_trajectory_and_imu(orients, traj, imu_dat, f'./train/traj{i}.npy', f'./train/imu{i}.npy')
-
+    
+    
+    # plot_trajectory(traj)
+    plot_imu_data(linacc_real, time_real)
+    plot_imu_data(angvel_real, time_real)
+    
+    
     return pose_dat
     # print(imu_dat.shape)
 
-    # plot_trajectory(traj)
-    # plot_imu_data(linacc_real, time_real)
-    # plot_imu_data(angvel_real, time_real)
+    
 
 
 
@@ -167,8 +170,9 @@ if __name__ == '__main__':
     # spiral = Trajectory(lambda t : [cos(t), sin(t), t/pi+0.5])
 
     # random_traj.plot(0, pi/2)
-
-    generate_num_data(1)
+    ntraj = 1
+    for i in range(ntraj):
+        generate_num_data(i)
 
     # random_traj.write_trajectory_and_imu(0, pi/2, './train/testgen.npy','./train/testimu.npy' )
 
